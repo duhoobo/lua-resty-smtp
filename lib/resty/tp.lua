@@ -126,7 +126,7 @@ end
 
 -- connect with server and return c object
 function connect(host, port, timeout, create)
-    local c, e = (create or ngx.socket.tcp)()
+    local c, e = (create or base.ngx.socket.tcp)()
 
     if not c then return nil, e end
 

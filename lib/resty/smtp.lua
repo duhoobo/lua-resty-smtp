@@ -11,6 +11,8 @@
 
 -- TODO
 -- * replace `os.date` with `ngx.localtime`
+-- * timeout unit inconsistent
+-- * reduce unnecessary modules
 --
 local base = _G
 local coroutine = require("coroutine")
@@ -30,7 +32,7 @@ module("resty.smtp")
 VERSION = "resty.stmp 0.0.1"
 
 -- timeout for connection
-TIMEOUT = 60
+TIMEOUT = 6000
 -- default server used to send e-mails
 SERVER = "localhost"
 -- default port
