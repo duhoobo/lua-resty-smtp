@@ -1,4 +1,5 @@
 local base = _G
+local base64 = require("resty.base64")
 
 module("resty.misc")
 
@@ -40,13 +41,94 @@ end
 try = newtry()
 
 
+-- FIXME following mime-relative string operations are quite ineffient compared 
+-- with original C version, maybe FFI can help?
+
 -- base64
 --
-function b64()
+function b64(ctx, chunk, extra)
+    if not chunk then return nil, nil end
 end
 
 
 function ub64()
 end
 
+
+-- quoted-printable
+--
+function qp()
+end
+
+
+function unqp()
+end
+
+
+-- line-wrap
+--
+function wrp()
+end
+
+function qpwrp()
+end
+
+
+-- dot
+--
+function dot(ctx, chunk, extra)
+    local buffer = ""
+
+    if not chunk then return nil, 2 end
+
+    for i = 1, #chunk do
+        local char = base.string.char(base.string.byte(chunk, i))
+
+        buffer = buffer .. char
+
+        if char == '\r' then
+            ctx = 1
+        elseif char == '\n' then
+            ctx = (ctx == 1) and 2 or 0
+        elseif char == "." then
+            if ctx == 2 then buffer = buffer .. "." end
+            ctx = 0
+        else ctx = 0 end
+    end
+
+    return buffer, ctx
+end
+
+
+-- eol
+--
+function eol(ctx, chunk, marker)
+    local buffer = ""
+
+    if not chunk then return nil, 0 end
+
+    local eolcandidate = function(char) 
+        return (char == '\r') or (char == '\n')
+    end
+
+    for i = 1, #chunk do
+        local char = base.string.char(base.string.byte(chunk, i))
+
+        if eolcandidate(char) then
+            if eolcandidate(ctx) then
+                if char == ctx then buffer = buffer .. marker end
+                ctx = 0
+            else 
+                buffer = buffer .. marker
+                ctx = char
+            end
+
+        else
+            buffer = buffer .. char
+            ctx = 0
+        end
+    end
+
+    return buffer, ctx
+end
 

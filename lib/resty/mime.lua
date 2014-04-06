@@ -13,6 +13,7 @@ local mime = require("mime.core")
 local io = require("io")
 local string = require("string")
 
+local misc = require("resty.misc")
 local ltn12 = require("resty.ltn12")
 
 module("mime")
@@ -82,10 +83,11 @@ wrap = choose(wrapt)
 
 -- define the end-of-line normalization filter
 function normalize(marker)
-    return ltn12.filter.cycle(eol, 0, marker)
+    return ltn12.filter.cycle(misc.eol, 0, marker)
 end
 
 -- high level stuffing filter
 function stuff()
-    return ltn12.filter.cycle(dot, 2)
+    return ltn12.filter.cycle(misc.dot, 2)
 end
+
