@@ -11,3 +11,6 @@ dos = "abcd\nefg"
 
 print(#mime.eol(0, dos, "\r\n"))
 print(#misc.eol(0, dos, "\r\n"))
+
+print(#mime.b64())
+print(#misc.b64())
