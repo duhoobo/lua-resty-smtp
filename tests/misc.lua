@@ -3,14 +3,45 @@ local mime = require("mime")
 local misc = require("resty.misc")
 
 
-print(mime.dot(2, ".\r\nStuffing the message.\r\n.\r\n."))
-print "---"
-print(misc.dot(2, ".\r\nStuffing the message.\r\n.\r\n."))
+function test_dot()
+    -- dot
+    print(mime.dot(2, ".\r\nStuffing the message.\r\n.\r\n."))
+    print "---"
+    print(misc.dot(2, ".\r\nStuffing the message.\r\n.\r\n."))
+end
 
-dos = "abcd\nefg"
+function test_eol()
+    dos = "abcd\nefg"
+    print(#mime.eol(0, dos, "\r\n"))
+    print(#misc.eol(0, dos, "\r\n"))
+end
 
-print(#mime.eol(0, dos, "\r\n"))
-print(#misc.eol(0, dos, "\r\n"))
+function test_b64_encode()
+    print(mime.b64("diego:password"))
+    a, b = mime.b64("")
+    print("[" .. (a or "nil") .. "]")
+    print("[" .. (b or "nil") .. "]")
 
-print(#mime.b64())
-print(#misc.b64())
+    a, b = mime.b64("", "")
+    print("[" .. (a or "nil") .. "]")
+    print("[" .. (b or "nil") .. "]")
+    --
+    print(misc.b64("diego:password"))
+    a, b = misc.b64("")
+    print("[" .. (a or "nil") .. "]")
+    print("[" .. (b or "nil") .. "]")
+
+    a, b = misc.b64("", "")
+    print("[" .. (a or "nil") .. "]")
+    print("[" .. (b or "nil") .. "]")
+end
+
+function test_b64_decode()
+    print(mime.unb64("ZGllZ286cGFzc3dvcmQ", "="))
+    print(misc.unb64("ZGllZ286cGFzc3dvcmQ", "="))
+end
+
+
+test_b64_decode()
+
+

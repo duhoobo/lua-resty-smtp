@@ -39,15 +39,47 @@ try = newtry()
 
 -- FIXME following mime-relative string operations are quite ineffient compared 
 -- with original C version, maybe FFI can help?
-
 -- base64
 --
 function b64(ctx, chunk, extra)
-    if not chunk then return nil, nil end
+    local part1, part2
+
+    if not ctx then return nil, nil end
+
+    -- remaining data from last round
+    part1, ctx = base64.encode(ctx)
+
+    if not chunk then 
+        part1 = part1 .. base64.pad(ctx)
+
+        if #part1 == 0 then return nil, nil
+        else return part1, nil end
+    end
+
+    -- second part
+    part2, ctx = base64.encode(ctx .. chunk)
+
+    return part1 .. part2, ctx
 end
 
 
-function ub64()
+function unb64(ctx, chunk, extra)
+    local part1, part2
+
+    if not ctx then return nil, nil end
+
+    -- remaining data from last round
+    part1, ctx = base64.decode(ctx)
+
+    if not chunk then
+        if #part1 == 0 then return nil, nil
+        else return part1, nil end
+    end
+
+    -- second part
+    part2, ctx = base64.decode(ctx .. chunk)
+
+    return part1 .. part2, ctx
 end
 
 
