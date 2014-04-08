@@ -10,11 +10,10 @@
 --  * Taken from LuaSocket 1.1 and modified for Lua 5.1
 --  * Modified to be suitable for b64 filter
 
-local base = _G
-local string = require("string")
 local math = require("math")
+local string = require("string")
 
-module("resty.base64")
+module("resty.smtp.base64")
 
 
 

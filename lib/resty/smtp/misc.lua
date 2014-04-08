@@ -1,7 +1,7 @@
 local base = _G
-local base64 = require("resty.base64")
+local base64 = require("resty.smtp.base64")
 
-module("resty.misc")
+module("resty.smtp.misc")
 
 
 

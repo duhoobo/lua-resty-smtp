@@ -9,14 +9,14 @@
 -- Declare module and import dependencies
 -----------------------------------------------------------------------------
 local base = _G
-local mime = require("mime.core")
+local mime = require("mime")
 local io = require("io")
 local string = require("string")
 
-local misc = require("resty.misc")
-local ltn12 = require("resty.ltn12")
+local misc = require("resty.smtp.misc")
+local ltn12 = require("resty.smtp.ltn12")
 
-module("mime")
+module("resty.smtp.mime")
 
 
 
@@ -40,21 +40,21 @@ end
 
 -- define the encoding filters
 encodet['base64'] = function()
-    return ltn12.filter.cycle(b64, "")
+    return ltn12.filter.cycle(misc.b64, "")
 end
 
 encodet['quoted-printable'] = function(mode)
-    return ltn12.filter.cycle(qp, "",
+    return ltn12.filter.cycle(mime.qp, "",
         (mode == "binary") and "=0D=0A" or "\r\n")
 end
 
 -- define the decoding filters
 decodet['base64'] = function()
-    return ltn12.filter.cycle(unb64, "")
+    return ltn12.filter.cycle(misc.unb64, "")
 end
 
 decodet['quoted-printable'] = function()
-    return ltn12.filter.cycle(unqp, "")
+    return ltn12.filter.cycle(mime.unqp, "")
 end
 
 local function format(chunk)
@@ -67,13 +67,13 @@ end
 -- define the line-wrap filters
 wrapt['text'] = function(length)
     length = length or 76
-    return ltn12.filter.cycle(wrp, length, length)
+    return ltn12.filter.cycle(mime.wrp, length, length)
 end
 wrapt['base64'] = wrapt['text']
 wrapt['default'] = wrapt['text']
 
 wrapt['quoted-printable'] = function()
-    return ltn12.filter.cycle(qpwrp, 76, 76)
+    return ltn12.filter.cycle(mime.qpwrp, 76, 76)
 end
 
 -- function that choose the encoding, decoding or wrap algorithm

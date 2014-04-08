@@ -12,11 +12,11 @@
 
 local base = _G
 local string = require("string")
-local ltn12 = require("ltn12")
 
-local misc = require("resty.misc")
+local ltn12 = require("resty.smtp.ltn12")
+local misc = require("resty.smtp.misc")
 
-module("resty.tp")
+module("resty.smtp.tp")
 
 
 

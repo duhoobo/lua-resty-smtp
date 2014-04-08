@@ -8,11 +8,11 @@
 -----------------------------------------------------------------------------
 -- Declare module
 -----------------------------------------------------------------------------
+local base = _G
 local string = require("string")
 local table = require("table")
-local base = _G
 
-module("resty.ltn12")
+module("resty.smtp.ltn12")
 
 
 

@@ -19,11 +19,11 @@ local coroutine = require("coroutine")
 local string = require("string")
 local math = require("math")
 local os = require("os")
-local mime = require("mime")
 
-local ltn12 = require("resty.ltn12")
-local tp = require("resty.tp")
-local misc = require("resty.misc")
+local mime = require("resty.smtp.mime")
+local ltn12 = require("resty.smtp.ltn12")
+local tp = require("resty.smtp.tp")
+local misc = require("resty.smtp.misc")
 
 module("resty.smtp")
 
@@ -93,16 +93,16 @@ end
 function metat.__index:login(user, password)
     self.try(self.tp:command("AUTH", "LOGIN"))
     self.try(self.tp:expect("3.."))
-    self.try(self.tp:command(mime.b64(user)))
+    self.try(self.tp:command(misc.b64(user)))
     self.try(self.tp:expect("3.."))
-    self.try(self.tp:command(mime.b64(password)))
+    self.try(self.tp:command(misc.b64(password)))
 
     return self.try(self.tp:expect("2.."))
 end
 
 
 function metat.__index:plain(user, password)
-    local auth = "PLAIN " .. mime.b64("\0" .. user .. "\0" .. password)
+    local auth = "PLAIN " .. misc.b64("\0" .. user .. "\0" .. password)
     self.try(self.tp:command("AUTH", auth))
     return self.try(self.tp:expect("2.."))
 end
