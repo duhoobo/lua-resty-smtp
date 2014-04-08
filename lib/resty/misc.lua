@@ -13,13 +13,9 @@ end
 function newtry(atexit)
     return function(...) 
         local ret, err = base.select(1, ...), base.select(2, ...)
-        if ret then
-            return ...
-        end
 
-        if base.type(atexit) == "function" then
-            atexit()
-        end
+        if ret then return ...  end
+        if base.type(atexit) == "function" then atexit() end
 
         base.error(err, 2)
         -- never be here
@@ -93,7 +89,9 @@ function dot(ctx, chunk, extra)
         elseif char == "." then
             if ctx == 2 then buffer = buffer .. "." end
             ctx = 0
-        else ctx = 0 end
+        else 
+            ctx = 0 
+        end
     end
 
     return buffer, ctx
