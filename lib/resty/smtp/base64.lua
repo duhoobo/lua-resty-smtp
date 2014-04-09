@@ -89,12 +89,12 @@ local f2t = function(a, b, c, d)
 end
 
 
-function pad(s)
-	local a, b, ca, cb, cc
+function pad(chunk)
+	local s, a, b, ca, cb, cc
 
-    if #s == 0 then return "" end
+    if #chunk == 0 then return "" end
 
-	_, _, a, b = s:find("(.?)(.?)")
+	_, _, a, b = chunk:find("(.?)(.?)")
 	if b == "" then 
 		s = a:byte() * 16
 		cb = math.fmod(s, 64)
@@ -102,7 +102,7 @@ function pad(s)
 		return t64[ca] .. t64[cb] .. "=="
 
     else
-        s = a:byte()*1024 + b:byte()*4
+        s = a:byte() * 1024 + b:byte() * 4
         cc = math.fmod(s, 64)
         s = (s - cc) / 64
         cb = math.fmod(s, 64)
@@ -112,24 +112,24 @@ function pad(s)
 end
 
 
-function encode(s)
-    local l = #s
+function encode(chunk)
+    local l = #chunk
     local r = math.fmod(l, 3)
 
     l = l - r
-    if l <= 0 then return "", s end
+    if l <= 0 then return "", chunk end
 
-    return string.gsub(s:sub(1, l), "(.)(.)(.)", t2f), s:sub(l + 1)
+    return string.gsub(chunk:sub(1, l), "(.)(.)(.)", t2f), chunk:sub(l + 1)
 end
 
-function decode(s)
-    local l = #s
+function decode(chunk)
+    local l = #chunk
     local r = math.fmod(l, 4)
 
     l = l - r
-    if l <= 0 then return "", s end
+    if l <= 0 then return "", chunk end
 
-    return string.gsub(s:sub(1, l), "(.)(.)(.)(.)", f2t), s:sub(l + 1)
+    return string.gsub(chunk:sub(1, l), "(.)(.)(.)(.)", f2t), chunk:sub(l + 1)
 end
 
 

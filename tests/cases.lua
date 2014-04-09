@@ -43,10 +43,14 @@ end
 
 
 function test_qp_encode()
-    print((mime.qp("ma玢")))
-    print((misc.qp("ma玢")))
+    print((mime.qp("", "ma玢 xxxx")))
+    print((misc.qp("", "ma玢 xxxx")))
 end
 
+function test_qp_encode_pad()
+    print((mime.qp("ma玢 xxx\r")))
+    print((misc.qp("ma玢 xxx\r")))
+end
 
-test_qp_encode()
+test_qp_encode_pad()
 

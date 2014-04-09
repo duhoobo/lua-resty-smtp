@@ -1,5 +1,6 @@
 local base = _G
 local base64 = require("resty.smtp.base64")
+local qpcore = require("resty.smtp.qp")
 
 module("resty.smtp.misc")
 
@@ -82,23 +83,58 @@ function unb64(ctx, chunk, extra)
     return part1 .. part2, ctx
 end
 
-
 -- quoted-printable
 --
-function qp()
+function qp(ctx, chunk, extra)
+    local part1, part2, marker
+
+    if not ctx then return nil, nil end
+
+    marker = extra or "\r\n"
+    part1, ctx = qpcore.encode(ctx, marker)
+
+    if not chunk then
+        part1 = part1 .. qpcore.pad(ctx)
+
+        if #part1 == 0 then return nil, nil
+        else return part1, nil end
+    end
+
+    -- second part
+    part2, ctx = qpcore.encode(ctx .. chunk, marker)
+
+    return part1 .. part2, ctx
 end
 
 
-function unqp()
+function unqp(ctx, chunk, extra)
+    local part1, part2
+
+    if not ctx then return nil, nil end
+
+    -- remaining data from last round
+    part1, ctx = qp.decode(ctx)
+
+    if not chunk then
+        if #part1 == 0 then return nil, nil
+        else return part1, nil end
+    end
+
+    -- second part
+    part2, ctx = qp.decode(ctx .. chunk)
+
+    return part1 .. part2, ctx
 end
 
 
 -- line-wrap
 --
 function wrp()
+    return
 end
 
 function qpwrp()
+    return
 end
 
 
