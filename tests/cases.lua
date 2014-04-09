@@ -1,6 +1,6 @@
 package.path = "/home/duhoobo/prj/amateur/lua-resty-smtp/lib/?.lua;" .. package.path
 local mime = require("mime")
-local misc = require("resty.misc")
+local misc = require("resty.smtp.misc")
 
 
 function test_dot()
@@ -42,6 +42,11 @@ function test_b64_decode()
 end
 
 
-test_b64_decode()
+function test_qp_encode()
+    print((mime.qp("ma玢")))
+    print((misc.qp("ma玢")))
+end
 
+
+test_qp_encode()
 

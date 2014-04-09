@@ -109,7 +109,7 @@ end
 
 function metat.__index:source(source, step)
     local sink = function(chunk, err)
-        if chunk then self:send(chunk)
+        if chunk then return self:send(chunk)
         else return 1 end
     end
 
