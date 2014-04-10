@@ -220,4 +220,3 @@ function decode(chunk)
     return buffer, table.concat(atom, "")
 end
 
-

@@ -133,3 +133,10 @@ function decode(chunk)
 end
 
 
+-- for Encoded Word
+--
+function qencode(chunk) return encode(chunk) end
+function qdecode(chunk) return decode(chunk) end
+function qpad(chunk) return pad(chunk) end
+
+
