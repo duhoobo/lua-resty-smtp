@@ -46,9 +46,6 @@ local function get_reply(c)
         until code == current and sep == " "
     end
 
-    -- FIXME for protocol debugging
-    base.print("server: [" .. reply .. "]")
-
     return code, reply
 end
 
@@ -84,9 +81,6 @@ end
 
 function metat.__index:command(cmd, arg)
     local request = cmd .. (arg and (" " .. arg) or "") .. "\r\n"
-    -- FIXME for protocol debugging
-    base.print("client: [" .. request .. "]")
-
     return self.c:send(request)
 end
 

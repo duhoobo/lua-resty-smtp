@@ -10,3 +10,6 @@ TODO
 * remove denpendency on module 'socket' from luasocket
 * make module mime pure Lua
 * completely indenpendent of luasocket
+* replace `os.date` with `ngx.localtime`
+* timeout unit inconsistent
+

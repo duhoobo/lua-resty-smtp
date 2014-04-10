@@ -9,11 +9,7 @@
 --  * 2014/04/06 03:50:15 - Modified for lua-nginx-module with pure Lua
 -----------------------------------------------------------------------------
 
--- TODO
--- * replace `os.date` with `ngx.localtime`
--- * timeout unit inconsistent
--- * reduce unnecessary modules
---
+
 local base = _G
 local coroutine = require("coroutine")
 local string = require("string")
@@ -93,16 +89,16 @@ end
 function metat.__index:login(user, password)
     self.try(self.tp:command("AUTH", "LOGIN"))
     self.try(self.tp:expect("3.."))
-    self.try(self.tp:command(misc.b64(user)))
+    self.try(self.tp:command(mime.b64(user)))
     self.try(self.tp:expect("3.."))
-    self.try(self.tp:command(misc.b64(password)))
+    self.try(self.tp:command(mime.b64(password)))
 
     return self.try(self.tp:expect("2.."))
 end
 
 
 function metat.__index:plain(user, password)
-    local auth = "PLAIN " .. misc.b64("\0" .. user .. "\0" .. password)
+    local auth = "PLAIN " .. mime.b64("\0" .. user .. "\0" .. password)
     self.try(self.tp:command("AUTH", auth))
     return self.try(self.tp:expect("2.."))
 end
@@ -143,7 +139,6 @@ end
 -- private methods
 --
 function open(server, port, create)
-    base.print(create)
     local tp = misc.try(tp.connect(server or SERVER, port or PORT,
                                      TIMEOUT, create))
     local session = base.setmetatable({ tp= tp }, metat)
