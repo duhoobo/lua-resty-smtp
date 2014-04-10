@@ -113,7 +113,7 @@ function unqp(ctx, chunk, extra)
     if not ctx then return nil, nil end
 
     -- remaining data from last round
-    part1, ctx = qp.decode(ctx)
+    part1, ctx = qpcore.decode(ctx)
 
     if not chunk then
         if #part1 == 0 then return nil, nil
@@ -121,7 +121,7 @@ function unqp(ctx, chunk, extra)
     end
 
     -- second part
-    part2, ctx = qp.decode(ctx .. chunk)
+    part2, ctx = qpcore.decode(ctx .. chunk)
 
     return part1 .. part2, ctx
 end

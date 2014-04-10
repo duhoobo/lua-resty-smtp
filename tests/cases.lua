@@ -43,14 +43,46 @@ end
 
 
 function test_qp_encode()
-    print((mime.qp("", "ma玢 xxxx")))
-    print((misc.qp("", "ma玢 xxxx")))
+    print "run test_qp_encode ..."
+
+    ea, eb = mime.qp("", "ma玢 xxxx")
+    ca, cb = misc.qp("", "ma玢 xxxx")
+
+    if ea == ca and eb == cb then print "passed"
+    else print "failed" end
 end
 
 function test_qp_encode_pad()
-    print((mime.qp("ma玢 xxx\r")))
-    print((misc.qp("ma玢 xxx\r")))
+    print "run test_qp_encode_pad ..."
+
+    ea, eb = mime.qp("ma玢\r\n xxx\r")
+    ca, cb = misc.qp("ma玢\r\n xxx\r")
+
+    print(ea)
+    if ea == ca and eb == cb then print "passed"
+    else print "failed" end
 end
 
-test_qp_encode_pad()
 
+function test_qp_decode()
+    print "run test_qp_decode ..."
+
+
+    ea, eb = mime.unqp("ma\r\n =E7=E3\rxbd")
+    ca, cb = misc.unqp("ma\r\n =E7=E3\rxbd")
+
+    print(ea, eb)
+    print(ca, cb)
+
+    if ea == ca and eb == cb then print "passed"
+    else print "failed" end
+end
+
+
+function main() 
+    test_qp_decode()
+
+end
+
+
+main()

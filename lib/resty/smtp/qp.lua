@@ -11,7 +11,7 @@ module("resty.smtp.qp")
 
 [Quoted-Printable Rules](http://en.wikipedia.org/wiki/Quoted-printable)
 
-* All characters except printable ASCII characters or end of line characters 
+* "All characters except printable ASCII characters" or "end of line characters"
   must be encoded.
 
 * All printable ASCII characters (decimal 33-126) may be represented by 
@@ -19,8 +19,8 @@ module("resty.smtp.qp")
 
 * ASCII tab (decimal 9) and space (decimal 32) may be represented by themselves,
   except if these characters would appear at the end of the encoded line. In
-  that case, they would need to be escaped as "=09" or "=20", or be followed
-  by a "=" (soft line break)
+  that case, they would need to be escaped as "=09" or "=20" (what we use), or 
+  be followed by a "=" (soft line break). 
 
 * If the data being encoded contains meaningful line breaks, they must be 
   encoded as an ASCII CRLF sequence. Conversely, if byte value 13 and 10 have
@@ -35,6 +35,9 @@ module("resty.smtp.qp")
 
 Encoded-Word - A slightly modified version of Quoted-Printable used in message
 headers.
+
+
+[RFC 2045](http://tools.ietf.org/html/rfc2045#page-19)
 
 --]]
 
@@ -71,11 +74,33 @@ qptd = {
 }
 
 
-local HEXBASE = "0123456789ABCDEF"
+local HEX_BASE = "0123456789ABCDEF"
 
 local quote = function(byte)
     local f, s = math.floor(byte/16) + 1, math.fmod(byte, 16) + 1
-    return table.concat({ '=', HEXBASE:sub(f, f), HEXBASE:sub(s, s) })
+    return table.concat({ '=', HEX_BASE:sub(f, f), HEX_BASE:sub(s, s) })
+end
+
+
+local HEX_LOOKUP = {
+    ['0']= 0,  ['1']= 1,  ['2']= 2,  ['3']= 3,  
+    ['4']= 4,  ['5']= 5,  ['6']= 6,  ['7']= 7,  
+    ['8']= 8,  ['9']= 9,  ['a']= 10, ['b']= 11,
+    ['c']= 12, ['d']= 13, ['e']= 14, ['f']= 15,
+                          ['A']= 10, ['B']= 11,
+    ['C']= 12, ['D']= 13, ['E']= 14, ['F']= 15, 
+}
+
+local unquote = function(fp, sp)
+    local hp, lp = HEX_LOOKUP[fp], HEX_LOOKUP[sp]
+
+    if not hp or not lp then return nil 
+    else return string.char(hp * 16 + lp) end
+end
+
+local printable = function(char)
+    local byte = string.byte(char)
+    return (byte > 31) and (byte < 127)
 end
 
 
@@ -83,10 +108,10 @@ function pad(chunk)
     local buffer, byte = "", 0
 
     for i = 1, #chunk do
-        byte = base.string.byte(chunk, i)
+        byte = string.byte(chunk, i)
 
         if qpte[byte + 1] == QP_PLAIN then
-            buffer = buffer .. base.string.char(byte)
+            buffer = buffer .. string.char(byte)
         else
             buffer = buffer .. quote(byte)
         end
@@ -103,7 +128,7 @@ function encode(chunk, marker)
     local atom, buffer = {}, ""
 
     for i = 1, #chunk do
-        table.insert(atom, base.string.byte(chunk, i))
+        table.insert(atom, string.byte(chunk, i))
 
         repeat
             local shift = 1
@@ -128,6 +153,7 @@ function encode(chunk, marker)
 
             elseif qpte[atom[1] + 1] == QP_QUOTE then
                 buffer = buffer .. quote(atom[1])
+
             else -- printable char
                 buffer = buffer .. string.char(atom[1])
             end
@@ -147,7 +173,51 @@ function encode(chunk, marker)
 end
 
 
-function decode(chunk, marker)
+function decode(chunk)
+    local atom, buffer = {}, ""
+
+    for i = 1, #chunk do
+        table.insert(atom, string.sub(chunk, i, i))
+
+        repeat
+            local shift = 3
+                
+            if atom[1] == '=' then
+                if #atom < 3 then -- need more
+                    break
+                elseif atom[2] == '\r' and atom[3] == '\n' then
+                    -- eliminate soft line break
+                else
+                    local char = unquote(atom[2], atom[3])
+                    if not char then
+                        buffer = buffer .. table.concat(atom, "")
+                    else
+                        buffer = buffer .. char
+                    end
+                end
+
+            elseif atom[1] == '\r' then
+                if #atom < 2 then -- need more
+                    break
+                elseif atom[2] == '\n' then
+                    buffer, shift = buffer .. "\r\n", 2
+                else -- neglect this '\r' and following char
+                    shift = 2
+                end
+
+            else
+                if atom[1] == '\t' or printable(atom[1]) then
+                    buffer, shift = buffer .. atom[1], 1
+                end
+            end
+
+            -- shift out used chars
+            for i = 1, 3 do atom[i] = atom[i + shift] end
+            
+        until #atom == 0
+    end
+
+    return buffer, table.concat(atom, "")
 end
 
 
