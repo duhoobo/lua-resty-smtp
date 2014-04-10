@@ -58,7 +58,6 @@ function test_qp_encode_pad()
     ea, eb = mime.qp("ma玢\r\n xxx\r")
     ca, cb = misc.qp("ma玢\r\n xxx\r")
 
-    print(ea)
     if ea == ca and eb == cb then print "passed"
     else print "failed" end
 end
@@ -71,8 +70,16 @@ function test_qp_decode()
     ea, eb = mime.unqp("ma\r\n =E7=E3\rxbd")
     ca, cb = misc.unqp("ma\r\n =E7=E3\rxbd")
 
-    print(ea, eb)
-    print(ca, cb)
+    if ea == ca and eb == cb then print "passed"
+    else print "failed" end
+end
+
+
+function test_wrp()
+    print "run test_wrp ..."
+
+    ea, eb = mime.wrp(4, "abcdefghijklmnopqrstuvwxzy", 4)
+    ca, cb = misc.wrp(4, "abcdefghijklmnopqrstuvwxzy", 4)
 
     if ea == ca and eb == cb then print "passed"
     else print "failed" end
@@ -80,8 +87,7 @@ end
 
 
 function main() 
-    test_qp_decode()
-
+    test_wrp()
 end
 
 

@@ -44,7 +44,7 @@ encodet['base64'] = function()
 end
 
 encodet['quoted-printable'] = function(mode)
-    return ltn12.filter.cycle(mime.qp, "",
+    return ltn12.filter.cycle(misc.qp, "",
         (mode == "binary") and "=0D=0A" or "\r\n")
 end
 
@@ -54,7 +54,7 @@ decodet['base64'] = function()
 end
 
 decodet['quoted-printable'] = function()
-    return ltn12.filter.cycle(mime.unqp, "")
+    return ltn12.filter.cycle(misc.unqp, "")
 end
 
 local function format(chunk)
@@ -67,7 +67,7 @@ end
 -- define the line-wrap filters
 wrapt['text'] = function(length)
     length = length or 76
-    return ltn12.filter.cycle(mime.wrp, length, length)
+    return ltn12.filter.cycle(misc.wrp, length, length)
 end
 wrapt['base64'] = wrapt['text']
 wrapt['default'] = wrapt['text']

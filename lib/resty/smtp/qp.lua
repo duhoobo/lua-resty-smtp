@@ -177,7 +177,7 @@ function decode(chunk)
     local atom, buffer = {}, ""
 
     for i = 1, #chunk do
-        table.insert(atom, string.sub(chunk, i, i))
+        table.insert(atom, chunk:sub(i, i))
 
         repeat
             local shift = 3

@@ -1,4 +1,5 @@
 local base = _G
+local string = require("string")
 local base64 = require("resty.smtp.base64")
 local qpcore = require("resty.smtp.qp")
 
@@ -40,6 +41,7 @@ try = newtry()
 
 -- FIXME following mime-relative string operations are quite ineffient compared 
 -- with original C version, maybe FFI can help?
+--
 -- base64
 --
 function b64(ctx, chunk, extra)
@@ -63,7 +65,6 @@ function b64(ctx, chunk, extra)
     return part1 .. part2, ctx
 end
 
-
 function unb64(ctx, chunk, extra)
     local part1, part2
 
@@ -82,6 +83,7 @@ function unb64(ctx, chunk, extra)
 
     return part1 .. part2, ctx
 end
+
 
 -- quoted-printable
 --
@@ -106,7 +108,6 @@ function qp(ctx, chunk, extra)
     return part1 .. part2, ctx
 end
 
-
 function unqp(ctx, chunk, extra)
     local part1, part2
 
@@ -129,8 +130,34 @@ end
 
 -- line-wrap
 --
-function wrp()
-    return
+function wrp(ctx, chunk, extra)
+    -- `ctx` shows how many more bytes current line can still hold
+    -- before reach the limit `length`
+    local buffer, length = "", extra or 76
+
+    if not chunk then 
+        -- last line already has some chars except \r\n
+        if ctx < length then return buffer .. "\r\n", length
+        else return nil, length end
+    end
+
+    for i = 1, #chunk do
+        local char = chunk:sub(i, i)
+
+        if char == '\r' then
+            -- take it as part of "\r\n"
+        elseif char == '\n' then
+            buffer, ctx = buffer .. "\r\n", length
+        else
+            if ctx <= 0 then -- hit the limit
+                buffer, ctx = buffer .. "\r\n", length
+            end
+
+            buffer, ctx = buffer .. char, ctx - 1
+        end
+    end
+
+    return buffer, ctx
 end
 
 function qpwrp()
@@ -146,7 +173,7 @@ function dot(ctx, chunk, extra)
     if not chunk then return nil, 2 end
 
     for i = 1, #chunk do
-        local char = base.string.char(base.string.byte(chunk, i))
+        local char = string.char(string.byte(chunk, i))
 
         buffer = buffer .. char
 
@@ -178,7 +205,7 @@ function eol(ctx, chunk, marker)
     end
 
     for i = 1, #chunk do
-        local char = base.string.char(base.string.byte(chunk, i))
+        local char = string.char(string.byte(chunk, i))
 
         if eolcandidate(char) then
             if eolcandidate(ctx) then
