@@ -4,41 +4,55 @@ local misc = require("resty.smtp.misc")
 
 
 function test_dot()
-    -- dot
-    print(mime.dot(2, ".\r\nStuffing the message.\r\n.\r\n."))
-    print "---"
-    print(misc.dot(2, ".\r\nStuffing the message.\r\n.\r\n."))
+    print "run test_dot ..."
+
+    ea, eb = mime.dot(2, ".\r\nStuffing the message.\r\n.\r\n.")
+    ca, cb = misc.dot(2, ".\r\nStuffing the message.\r\n.\r\n.")
+
+    if ea == ca and eb == cb then print "OK"
+    else print "failed" end
 end
 
 function test_eol()
-    dos = "abcd\nefg"
-    print(#mime.eol(0, dos, "\r\n"))
-    print(#misc.eol(0, dos, "\r\n"))
+    print "run test_eol ..."
+
+    ea, eb = mime.eol(0, "abcd\nefg", "\r\n")
+    ca, cb = misc.eol(0, "abcd\nefg", "\r\n")
+
+    if ea == ca and eb == cb then print "OK"
+    else print "failed" end
 end
 
 function test_b64_encode()
-    print(mime.b64("diego:password"))
-    a, b = mime.b64("")
-    print("[" .. (a or "nil") .. "]")
-    print("[" .. (b or "nil") .. "]")
+    print "run test_b64_encode ..."
 
-    a, b = mime.b64("", "")
-    print("[" .. (a or "nil") .. "]")
-    print("[" .. (b or "nil") .. "]")
-    --
-    print(misc.b64("diego:password"))
-    a, b = misc.b64("")
-    print("[" .. (a or "nil") .. "]")
-    print("[" .. (b or "nil") .. "]")
+    ea, eb = mime.b64("diego:password")
+    ca, cb = misc.b64("diego:password")
 
-    a, b = misc.b64("", "")
-    print("[" .. (a or "nil") .. "]")
-    print("[" .. (b or "nil") .. "]")
+    if ea == ca and eb == cb then print "OK"
+    else print "failed" end
+
+    ea, eb = mime.b64("")
+    ca, cb = misc.b64("")
+
+    if ea == ca and eb == cb then print "OK"
+    else print "failed" end
+
+    ea, eb = mime.b64("", "")
+    ca, cb = misc.b64("", "")
+
+    if ea == ca and eb == cb then print "OK"
+    else print "failed" end
 end
 
 function test_b64_decode()
-    print(mime.unb64("ZGllZ286cGFzc3dvcmQ", "="))
-    print(misc.unb64("ZGllZ286cGFzc3dvcmQ", "="))
+    print "run test_qp_encode ..."
+
+    ea, eb = mime.unb64("ZGllZ286cGFzc3dvcmQ", "=")
+    ca, cb = misc.unb64("ZGllZ286cGFzc3dvcmQ", "=")
+
+    if ea == ca and eb == cb then print "OK"
+    else print "failed" end
 end
 
 
@@ -48,7 +62,7 @@ function test_qp_encode()
     ea, eb = mime.qp("", "ma玢 xxxx")
     ca, cb = misc.qp("", "ma玢 xxxx")
 
-    if ea == ca and eb == cb then print "passed"
+    if ea == ca and eb == cb then print "OK"
     else print "failed" end
 end
 
@@ -58,7 +72,7 @@ function test_qp_encode_pad()
     ea, eb = mime.qp("ma玢\r\n xxx\r")
     ca, cb = misc.qp("ma玢\r\n xxx\r")
 
-    if ea == ca and eb == cb then print "passed"
+    if ea == ca and eb == cb then print "OK"
     else print "failed" end
 end
 
@@ -70,7 +84,7 @@ function test_qp_decode()
     ea, eb = mime.unqp("ma\r\n =E7=E3\rxbd")
     ca, cb = misc.unqp("ma\r\n =E7=E3\rxbd")
 
-    if ea == ca and eb == cb then print "passed"
+    if ea == ca and eb == cb then print "OK"
     else print "failed" end
 end
 
@@ -81,13 +95,43 @@ function test_wrp()
     ea, eb = mime.wrp(4, "abcdefghijklmnopqrstuvwxzy", 4)
     ca, cb = misc.wrp(4, "abcdefghijklmnopqrstuvwxzy", 4)
 
-    if ea == ca and eb == cb then print "passed"
+    if ea == ca and eb == cb then print "OK"
+    else print "failed" end
+
+    ea, eb = mime.wrp(4, nil, 4)
+    ca, cb = misc.wrp(4, nil, 4)
+
+    if ea == ca and eb == cb then print "OK"
+    else print "failed" end
+end
+
+function test_qpwrp()
+    print "run test_qpwrp ..."
+
+    ea, eb = mime.qpwrp(4, "ma=E7=E3=", 4)
+    ca, cb = misc.qpwrp(4, "ma=E7=E3=", 4)
+
+    if ea == ca and eb == cb then print "OK"
+    else print "failed" end
+
+    ea, eb = mime.qpwrp(4, nil, 4)
+    ca, cb = misc.qpwrp(4, nil, 4)
+
+    if ea == ca and eb == cb then print "OK"
     else print "failed" end
 end
 
 
 function main() 
+    test_dot()
+    test_eol()
+    test_b64_encode()
+    test_b64_decode()
+    test_qp_encode()
+    test_qp_encode_pad()
+    test_qp_decode()
     test_wrp()
+    test_qpwrp()
 end
 
 

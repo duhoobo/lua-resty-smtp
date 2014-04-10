@@ -9,7 +9,6 @@
 -- Declare module and import dependencies
 -----------------------------------------------------------------------------
 local base = _G
-local mime = require("mime")
 local io = require("io")
 local string = require("string")
 
@@ -73,7 +72,7 @@ wrapt['base64'] = wrapt['text']
 wrapt['default'] = wrapt['text']
 
 wrapt['quoted-printable'] = function()
-    return ltn12.filter.cycle(mime.qpwrp, 76, 76)
+    return ltn12.filter.cycle(misc.qpwrp, 76, 76)
 end
 
 -- function that choose the encoding, decoding or wrap algorithm

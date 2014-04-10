@@ -160,8 +160,42 @@ function wrp(ctx, chunk, extra)
     return buffer, ctx
 end
 
-function qpwrp()
-    return
+function qpwrp(ctx, chunk, extra)
+    -- `ctx` shows how many more bytes current line can still hold
+    -- before reach the limit `length`
+    local buffer, length = "", extra or 76
+
+    if not chunk then 
+        -- last line already has some chars except \r\n
+        if ctx < length then return buffer .. "=\r\n", length
+        else return nil, length end
+
+    end
+
+    for i = 1, #chunk do
+        local char = chunk:sub(i, i)
+
+        if char == '\r' then
+            -- take it as part of "\r\n"
+        elseif char == '\n' then
+            buffer, ctx = buffer .. "\r\n", length
+        elseif char == '=' then
+            if ctx <= 3 then
+                buffer, ctx = buffer .. "=\r\n", length
+            end
+            
+            buffer, ctx = buffer .. char, ctx - 1
+
+        else
+            if ctx <= 1 then
+                buffer, ctx = buffer .. "=\r\n", length
+            end
+
+            buffer, ctx = buffer .. char, ctx - 1
+        end
+    end
+
+    return buffer, ctx
 end
 
 
