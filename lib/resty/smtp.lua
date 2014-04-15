@@ -35,7 +35,7 @@ SERVER = "localhost"
 PORT = 25
 -- domain used in HELO command and default sendmail
 -- If we are under a CGI, try to get from environment
-DOMAIN = os.getenv("SERVER_NAME") or "localhost"
+DOMAIN = "localhost"
 -- default time zone (means we don"t know)
 ZONE = "-0000"
 
