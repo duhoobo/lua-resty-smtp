@@ -18,7 +18,7 @@ dependencies = {
 
 -- contains information on how to fetch sources to build this rock.
 source = {
-    url= "git://github.com/duhoobo/lua-resty-smtp.git",
+    url= "git://github.com/blablacio/lua-resty-smtp.git",
     file= "lua-resty-smtp"
 }
 
