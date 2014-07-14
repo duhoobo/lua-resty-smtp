@@ -119,14 +119,25 @@ end
 
 
 -- connect with server and return c object
-function connect(host, port, timeout, create)
+function connect(host, port, timeout, ssl, create)
     local c, e = (create or base.ngx.socket.tcp)()
 
     if not c then return nil, e end
 
     c:settimeout(timeout or TIMEOUT)
 
-    local r, e = c:connect(host, port)
+    local sockopts
+    if ssl == true then
+        sockopts = { ssl = true }
+    end
+
+    local r, e
+    if sockopts then
+    	r, e = c:connect(host, port, sockopts)
+    else
+        r, e = c:connect(host, port)
+    end
+
     if not r then
         c:close()
         return nil, e
