@@ -230,7 +230,7 @@ local function send_source(mesgt)
     local headers = lower_headers(mesgt.headers or {})
 
     headers["content-type"] = headers["content-type"] or
-        "text/plain; charset='iso-8859-1'"
+        "text/plain; charset=iso-8859-1"
 
     send_headers(headers)
 
@@ -250,7 +250,7 @@ local function send_string(mesgt)
     local headers = lower_headers(mesgt.headers or {})
 
     headers["content-type"] = headers["content-type"] or
-        "text/plain; charset='iso-8859-1'"
+        "text/plain; charset=iso-8859-1"
 
     send_headers(headers)
 
