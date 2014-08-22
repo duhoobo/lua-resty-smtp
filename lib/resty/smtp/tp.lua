@@ -119,9 +119,8 @@ end
 
 
 -- connect with server and return c object
-function connect(host, port, timeout, create)
+function connect(host, port, timeout, ssl, create)
     local c, e = (create or base.ngx.socket.tcp)()
-
     if not c then return nil, e end
 
     c:settimeout(timeout or TIMEOUT)
@@ -130,6 +129,19 @@ function connect(host, port, timeout, create)
     if not r then
         c:close()
         return nil, e
+    end
+
+    if ssl.enable then
+        if not c.sslhandshake then
+            c:close()
+            return nil, "socket does not have ssl support"
+        end
+
+        local s, e = c:sslhandshake(nil, host, ssl.verify_cert)
+        if not s then 
+            c:close()
+            return nil, "ssl handshake: " .. e
+        end
     end
 
     return base.setmetatable({ c= c }, metat)
