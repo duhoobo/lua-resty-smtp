@@ -1,12 +1,10 @@
 
 LUA_VERSION=5.1
 
-LUA_DIR=/usr/local
+LUA_DIR=/usr/local/openresty
 
-# for C modules
-LUA_LIBDIR=$(LUA_DIR)/lib/lua/$(LUA_VERSION)
 # for Lua modules
-LUA_SHAREDIR=$(LUA_DIR)/share/lua/$(LUA_VERSION)
+LUA_SHAREDIR=$(LUA_DIR)/lualib
 
 INSTALL=install
 
