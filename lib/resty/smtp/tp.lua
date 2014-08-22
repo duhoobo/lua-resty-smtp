@@ -15,6 +15,7 @@ local string = require("string")
 
 local ltn12 = require("resty.smtp.ltn12")
 local misc = require("resty.smtp.misc")
+local unpack = unpack
 
 module("resty.smtp.tp")
 
@@ -119,7 +120,7 @@ end
 
 
 -- connect with server and return c object
-function connect(host, port, timeout, create)
+function connect(host, port, timeout, use_ssl, ssl_verify, create)
     local c, e = (create or base.ngx.socket.tcp)()
 
     if not c then return nil, e end
@@ -130,6 +131,19 @@ function connect(host, port, timeout, create)
     if not r then
         c:close()
         return nil, e
+    end
+
+    local params = {nil, host}
+    if use_ssl == true then
+        if ssl_verify == true then
+            params[#params + 1] = true
+        end
+
+        local session, err = c:sslhandshake(unpack(params))
+        if not session then
+            c:close()
+            return nil, err
+        end
     end
 
     return base.setmetatable({ c= c }, metat)
