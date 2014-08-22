@@ -6,9 +6,6 @@ I must be crazy trying to send mail with Nginx.
 TODO
 ----
 
-* replace `os.date` with `ngx.localtime`
-* timeout unit inconsistent
-* clean namespace 
 
 Purpose
 -------
@@ -16,6 +13,8 @@ Purpose
 
 Features
 --------
+
+* SSL connection supported (lua-nginx-lua >= v0.9.11 needed)
 
 
 Extra filters
@@ -69,5 +68,9 @@ Your SMTP server is the bottleneck. :)
 
 Known Issues
 ------------
+
+* Only work with LuaJIT 2.x now, because the codebase relies on `pcall`
+  massively and lua-nginx-module does not work well with standard Lua 5.1 VM 
+  under this situation. See [Known Issues](http://wiki.nginx.org/HttpLuaModule#Lua_Coroutine_Yielding.2FResuming)
 
 

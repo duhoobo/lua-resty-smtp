@@ -138,15 +138,15 @@ end
 
 -- private methods
 --
-function open(server, port, create)
+function open(server, port, ssl, create)
     local tp = misc.try(tp.connect(server or SERVER, port or PORT,
-                                     TIMEOUT, create))
+                                   TIMEOUT, ssl, create))
     local session = base.setmetatable({ tp= tp }, metat)
 
     -- make sure tp is closed if we get an exception
     session.try = misc.newtry(function()
-                                session:close()
-                            end)
+                              session:close()
+                          end)
     return session
 end
 
@@ -305,7 +305,9 @@ end
 -- public methods
 --
 send = misc.except(function(mailt)
-    local session = open(mailt.server, mailt.port, mailt.create)
+    local session = open(mailt.server, mailt.port, 
+                         mailt.ssl or { enable= false, verify_cert= false }, 
+                         mailt.create)
     local ext = session:greet(mailt.domain)
 
     session:auth(mailt.user, mailt.password, ext)

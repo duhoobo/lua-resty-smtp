@@ -33,6 +33,7 @@ function sendmail()
         user= "wireless.alarm@baofeng.com",
         password= "qwe123",
         create= socket.tcp,
+        ssl= { enable= true, verify_cert= false },
     }
 
     print(r)

@@ -1,6 +1,6 @@
 rockspec_format = "1.0"
 package = "resty.smtp"
-version = "0.0.1-1"
+version = "0.0.2-1"
 
 
 
