@@ -7,8 +7,8 @@ module("resty.smtp.mime")
 
 
 
--- FIXME following mime-relative string operations are quite ineffient compared 
--- with original C version, maybe FFI can help?
+-- FIXME following mime-relative string operations are quite inefficient 
+-- compared with original C version, maybe FFI can help?
 --
 -- base64
 --
