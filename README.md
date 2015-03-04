@@ -59,7 +59,7 @@ provided:
 [Encoded-Word](http://en.wikipedia.org/wiki/MIME#Encoded-Word) format (not
 support _Q-encoding_ yet);
 
-* `mime.ew`: used to decode string in Encoded-Word format (not implemented);
+* `mime.unew`: used to decode string in Encoded-Word format (not implemented);
 
 
 
@@ -91,8 +91,8 @@ Example
         headers= {
             subject= mime.ew(args.subject or config.mail.SUBJECT, nil, 
                              { charset= "utf-8" }), 
-            ["content-transfer-encoding"] = "BASE64",
-            ["content-type"] = "text/plain; charset='utf-8'",
+            ["content-transfer-encoding"]= "BASE64",
+            ["content-type"]= "text/plain; charset='utf-8'",
         },
     
         body= mime.b64(args.body)
@@ -115,7 +115,7 @@ TODO
 
 * Don't abort the whole SMTP request while one of the many recipients invalid;
 * To reimplement MIME-relative pure-lua version low-level filters with FFI?
-* To implement filter `mime.uew`;
+* To implement filter `mime.unew`;
 
 
 

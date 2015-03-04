@@ -201,7 +201,7 @@ end
 
 --
 -- extra - the charset to converted to
-function uew(ctx, chunk, extra)
+function unew(ctx, chunk, extra)
     -- TODO
     -- This one needs a little more work, because we have to decode 
     -- `chunk` with both specified encoding and charset on the fly.
