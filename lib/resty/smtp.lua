@@ -138,10 +138,9 @@ end
 
 -- private methods
 --
-function open(server, port, ssl, create)
-    local tp = misc.try(tp.connect(server or SERVER, port or PORT,
-                                   TIMEOUT, ssl, create))
-    local session = base.setmetatable({ tp= tp }, metat)
+function open(server, port, timeout, create, ssl)
+    local tp = misc.try(tp.connect(server, port, timeout, ssl, create))
+    local session = base.setmetatable({tp= tp}, metat)
 
     -- make sure tp is closed if we get an exception
     session.try = misc.newtry(function()
@@ -181,7 +180,7 @@ local function send_headers(headers)
     local h = {}
 
     for k, v in base.pairs(headers) do
-        base.table.insert(h, base.table.concat({ k, v }, ": "))
+        base.table.insert(h, base.table.concat({k, v}, ": "))
     end
     base.table.insert(h, "\r\n")
 
@@ -305,9 +304,11 @@ end
 -- public methods
 --
 send = misc.except(function(mailt)
-    local session = open(mailt.server, mailt.port, 
-                         mailt.ssl or { enable= false, verify_cert= false }, 
-                         mailt.create)
+    local session = open(mailt.server or SERVER, mailt.port or PORT, 
+                         mailt.timeout or TIMEOUT,
+                         mailt.create or ngx.socket.tcp,
+                         mailt.ssl or {enable= false, verify_cert= false})
+
     local ext = session:greet(mailt.domain)
 
     session:auth(mailt.user, mailt.password, ext)

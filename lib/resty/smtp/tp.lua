@@ -19,10 +19,6 @@ local misc = require("resty.smtp.misc")
 module("resty.smtp.tp")
 
 
-
-TIMEOUT = 60
-
-
 -- gets server reply (works for SMTP and FTP)
 local function get_reply(c)
     local code, current, sep
@@ -51,7 +47,7 @@ end
 
 
 -- metatable for sock object
-local metat = { __index= {} }
+local metat = {__index= {}}
 
 
 function metat.__index:expect(check)
@@ -120,10 +116,10 @@ end
 
 -- connect with server and return c object
 function connect(host, port, timeout, ssl, create)
-    local c, e = (create or base.ngx.socket.tcp)()
+    local c, e = create()
     if not c then return nil, e end
 
-    c:settimeout(timeout or TIMEOUT)
+    c:settimeout(timeout)
 
     local r, e = c:connect(host, port)
     if not r then
@@ -144,6 +140,6 @@ function connect(host, port, timeout, ssl, create)
         end
     end
 
-    return base.setmetatable({ c= c }, metat)
+    return base.setmetatable({c= c}, metat)
 end
 
