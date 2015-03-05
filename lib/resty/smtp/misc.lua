@@ -15,7 +15,7 @@ function newtry(atexit)
         if ret then return ...  end
         if base.type(atexit) == "function" then atexit() end
 
-        base.error(err, 0)
+        base.error(err, 2)
         -- never be here
         return ret
     end
