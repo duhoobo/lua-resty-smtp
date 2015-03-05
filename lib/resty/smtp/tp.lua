@@ -115,7 +115,7 @@ end
 
 
 -- connect with server and return c object
-function connect(host, port, timeout, ssl, create)
+function connect(host, port, timeout, create, ssl)
     local c, e = create()
     if not c then return nil, e end
 

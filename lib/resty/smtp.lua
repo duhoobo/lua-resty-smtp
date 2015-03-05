@@ -139,7 +139,7 @@ end
 -- private methods
 --
 function open(server, port, timeout, create, ssl)
-    local tp = misc.try(tp.connect(server, port, timeout, ssl, create))
+    local tp = misc.try(tp.connect(server, port, timeout, create, ssl))
     local session = base.setmetatable({tp= tp}, metat)
 
     -- make sure tp is closed if we get an exception
@@ -306,7 +306,7 @@ end
 send = misc.except(function(mailt)
     local session = open(mailt.server or SERVER, mailt.port or PORT, 
                          mailt.timeout or TIMEOUT,
-                         mailt.create or ngx.socket.tcp,
+                         mailt.create or base.ngx.socket.tcp,
                          mailt.ssl or {enable= false, verify_cert= false})
 
     local ext = session:greet(mailt.domain)
