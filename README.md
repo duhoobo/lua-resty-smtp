@@ -70,7 +70,7 @@ Installation
 
 or
 
-    luarocks install --local rockspec/resty.smtp-0.0.2-1.rockspec 
+    luarocks install --local rockspec/resty.smtp-0.0.3-1.rockspec 
 
 
 
