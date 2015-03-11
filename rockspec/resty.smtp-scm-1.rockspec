@@ -1,6 +1,6 @@
 rockspec_format = "1.0"
 package = "resty.smtp"
-version = "0.0.3-1"
+version = "scm-1"
 
 description = {
     summary= "A smtp module for lua-nginx-module",
