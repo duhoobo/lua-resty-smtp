@@ -25,7 +25,7 @@ module("resty.smtp")
 
 
 
-VERSION = "resty.stmp 0.0.3"
+VERSION = "resty.smtp 0.0.3"
 
 -- timeout for connection
 TIMEOUT = 6000
@@ -260,14 +260,14 @@ end
 
 -- message source
 function send_message(mesgt)
-    if base.type(mesgt.body) == "table" then 
+    if base.type(mesgt.body) == "table" then
         send_multipart(mesgt)
 
-    elseif base.type(mesgt.body) == "function" then 
+    elseif base.type(mesgt.body) == "function" then
         send_source(mesgt)
 
-    else 
-        send_string(mesgt) 
+    else
+        send_string(mesgt)
     end
 end
 
@@ -304,7 +304,7 @@ end
 -- public methods
 --
 send = misc.except(function(mailt)
-    local session = open(mailt.server or SERVER, mailt.port or PORT, 
+    local session = open(mailt.server or SERVER, mailt.port or PORT,
                          mailt.timeout or TIMEOUT,
                          mailt.create or base.ngx.socket.tcp,
                          mailt.ssl or {enable= false, verify_cert= false})
