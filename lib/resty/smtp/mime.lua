@@ -92,6 +92,7 @@ wrap = choose(wrapt)
 
 -- define the end-of-line normalization filter
 function normalize(marker)
+    if not marker then marker = '\r\n' end
     return ltn12.filter.cycle(eol, 0, marker)
 end
 
