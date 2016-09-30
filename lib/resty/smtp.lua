@@ -25,7 +25,7 @@ module("resty.smtp")
 
 
 
-VERSION = "resty.smtp 0.0.3"
+_VERSION = "0.0.3"
 
 -- timeout for connection
 TIMEOUT = 6000
