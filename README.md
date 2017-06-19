@@ -92,7 +92,7 @@ Example
             subject= mime.ew(args.subject or config.mail.SUBJECT, nil,
                              { charset= "utf-8" }),
             ["content-transfer-encoding"]= "BASE64",
-            ["content-type"]= "text/plain; charset='utf-8'",
+            ["content-type"]= "text/plain; charset=utf-8",
         },
 
         body= mime.b64(args.body)
