@@ -228,8 +228,7 @@ local function send_source(mesgt)
     -- make sure we have a content-type
     local headers = lower_headers(mesgt.headers or {})
 
-    headers["content-type"] = headers["content-type"] or
-        'text/plain; charset="iso-8859-1"'
+    headers["content-type"] = headers["content-type"] or 'text/html; charset="utf-8"'
 
     send_headers(headers)
 
@@ -248,8 +247,7 @@ local function send_string(mesgt)
     -- make sure we have a content-type
     local headers = lower_headers(mesgt.headers or {})
 
-    headers["content-type"] = headers["content-type"] or
-        'text/plain; charset="iso-8859-1"'
+    headers["content-type"] = headers["content-type"] or 'text/html; charset="utf-8"'
 
     send_headers(headers)
 
